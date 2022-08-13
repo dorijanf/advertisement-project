@@ -22,6 +22,16 @@ namespace backend_template.Database
                 .HasMaxLength(256)
                 .IsRequired();
 
+            modelBuilder.Entity<FavouriteAdvertisement>()
+                .HasKey(x => x.Id);
+
+            modelBuilder.Entity<FavouriteAdvertisement>()
+                .Property(x => x.AdvertisementId)
+                .IsRequired();
+
+            modelBuilder.Entity<FavouriteAdvertisement>()
+                .Property(x => x.UserId)
+                .IsRequired();
         }
     }
 }
