@@ -6,7 +6,7 @@ services:
     user: root
     image: mcr.microsoft.com/mssql/server:2019-latest
     environment:
-      SA_PASSWORD: "password123"
+      SA_PASSWORD: "Password123"
       ACCEPT_EULA: "Y"
     volumes:
       - sqlvolume:/var/opt/mssql
