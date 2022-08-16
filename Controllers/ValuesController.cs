@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using backend_template.Services;
 using Microsoft.AspNetCore.Mvc;
+using SharedModels.Dtos;
 
 namespace backend_template.Controllers
 {
@@ -10,25 +10,38 @@ namespace backend_template.Controllers
     [ApiController]
     public class ValuesController : ControllerBase
     {
-        // GET api/values
+        private readonly IAdvertisementService advertisementService;
+
+        public ValuesController(IAdvertisementService advertisementService)
+        {
+            this.advertisementService = advertisementService;
+        }
+
+        /// <summary>
+        /// Gets a list of all advertisements containing the title, id and user id.
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
-        public ActionResult<IEnumerable<string>> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
+        public async Task<IEnumerable<AdvertisementDto>> Get() =>
+            await advertisementService.GetAdvertisements();
 
-        // GET api/values/5
+        /// <summary>
+        /// Gets a single AdvertisementDto object by its id.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("{id}")]
-        public ActionResult<string> Get(int id)
-        {
-            return "value";
-        }
+        public async Task<AdvertisementDto> Get(int id) =>
+            await advertisementService.GetAdvertisementById(id);
 
-        // POST api/values
+        /// <summary>
+        /// Creates a new advertisement and stores it in the database.
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>id of the newly created advertisement</returns>
         [HttpPost]
-        public void Post([FromBody] string value)
-        {
-        }
+        public async Task<int> Post([FromBody] AdvertisementDto model) =>
+            await advertisementService.CreateNewAdvertisement(model);
 
         // PUT api/values/5
         [HttpPut("{id}")]

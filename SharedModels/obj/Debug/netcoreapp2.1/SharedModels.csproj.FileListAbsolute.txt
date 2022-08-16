@@ -1,0 +1,9 @@
+C:\Repos\AdvertisementProject\SharedModels\obj\Debug\netcoreapp2.1\SharedModels.csproj.AssemblyReference.cache
+C:\Repos\AdvertisementProject\SharedModels\obj\Debug\netcoreapp2.1\SharedModels.csproj.CoreCompileInputs.cache
+C:\Repos\AdvertisementProject\SharedModels\obj\Debug\netcoreapp2.1\SharedModels.AssemblyInfoInputs.cache
+C:\Repos\AdvertisementProject\SharedModels\obj\Debug\netcoreapp2.1\SharedModels.AssemblyInfo.cs
+C:\Repos\AdvertisementProject\SharedModels\bin\Debug\netcoreapp2.1\SharedModels.deps.json
+C:\Repos\AdvertisementProject\SharedModels\bin\Debug\netcoreapp2.1\SharedModels.dll
+C:\Repos\AdvertisementProject\SharedModels\bin\Debug\netcoreapp2.1\SharedModels.pdb
+C:\Repos\AdvertisementProject\SharedModels\obj\Debug\netcoreapp2.1\SharedModels.dll
+C:\Repos\AdvertisementProject\SharedModels\obj\Debug\netcoreapp2.1\SharedModels.pdb
