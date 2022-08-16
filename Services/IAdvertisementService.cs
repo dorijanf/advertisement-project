@@ -23,11 +23,19 @@ namespace backend_template.Services
         Task<AdvertisementDto> GetAdvertisementById(int id);
 
         /// <summary>
-        /// Creates a new advertisement entity and stores it in the database.
+        /// Creates a new advertisement and stores it in the database.
         /// The method returns the id of the newly created entity.
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
         Task<int> CreateNewAdvertisement(AdvertisementDto model);
+
+        /// <summary>
+        /// Creates a new favourite advertisement entry in the database.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="systemUser"></param>
+        /// <returns></returns>
+        Task<int> AddAdvertisementToFavourites(int id, string userEmail);
     }
 }

@@ -48,6 +48,13 @@ namespace backend_template.Services
         }
 
 
+        /// <summary>
+        /// Creates a new advertisement entity from the incoming model after which we attempt
+        /// to store it in the database. After storing it we attempt to publish the newly
+        /// created advertisement to the message broker.
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         public async Task<int> CreateNewAdvertisement(AdvertisementDto model)
         {
             var advertisement = CreateAdvertisementEntity(model);
@@ -55,6 +62,26 @@ namespace backend_template.Services
             await dbContext.SaveChangesAsync();
             await Publish(advertisement);
             return advertisement.Id;
+        }
+
+        /// <summary>
+        /// Creating a new favourite advertisement entry by providing the id of the advertisement
+        /// and the email for the user. Since there is no user table/key constraint we are not joining
+        /// the user and the advertisement by their id, only the advertisement.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="userEmail"></param>
+        /// <returns></returns>
+        public async Task<int> AddAdvertisementToFavourites(int id, string userEmail)
+        {
+            var favouriteAdvertisement = new FavouriteAdvertisement
+            {
+                AdvertisementId = id,
+                UserEmail = userEmail
+            };
+            dbContext.FavouriteAdvertisements.Add(favouriteAdvertisement);
+            await dbContext.SaveChangesAsync();
+            return favouriteAdvertisement.Id;
         }
 
         /// <summary>
@@ -80,8 +107,6 @@ namespace backend_template.Services
             }
         }
 
-
-
         /// <summary>
         /// Creates a new <see cref="AdvertisementDto"/> object from the <see cref="Advertisement"/>
         /// entity.
@@ -95,7 +120,7 @@ namespace backend_template.Services
                 Id = advertisement.Id,
                 Title = advertisement.Title,
                 Content = advertisement.Content,
-                UserId = advertisement.UserId
+                UserEmail = advertisement.UserEmail
             };
         }
 
@@ -111,7 +136,7 @@ namespace backend_template.Services
             {
                 Title = advertisement.Title,
                 Content = advertisement.Content,
-                UserId = advertisement.UserId
+                UserEmail = advertisement.UserEmail
             };
         }
     }

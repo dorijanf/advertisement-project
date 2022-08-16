@@ -11,6 +11,7 @@ namespace backend_template.Database
 
         // Entities
         public DbSet<Advertisement> Advertisements { get; set; }
+        public DbSet<FavouriteAdvertisement> FavouriteAdvertisements { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -30,7 +31,7 @@ namespace backend_template.Database
                 .IsRequired();
 
             modelBuilder.Entity<FavouriteAdvertisement>()
-                .Property(x => x.UserId)
+                .Property(x => x.UserEmail)
                 .IsRequired();
         }
     }

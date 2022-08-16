@@ -2,15 +2,17 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using backend_template.Database;
 
 namespace backendtemplate.Migrations
 {
     [DbContext(typeof(AdvertisementContext))]
-    partial class AdvertisementContextModelSnapshot : ModelSnapshot
+    [Migration("20220816085219_AdvertisementForeignKey")]
+    partial class AdvertisementForeignKey
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -45,14 +47,13 @@ namespace backendtemplate.Migrations
 
                     b.Property<int>("AdvertisementId");
 
-                    b.Property<string>("UserEmail")
-                        .IsRequired();
+                    b.Property<int>("UserEmail");
 
                     b.HasKey("Id");
 
                     b.HasIndex("AdvertisementId");
 
-                    b.ToTable("FavouriteAdvertisements");
+                    b.ToTable("FavouriteAdvertisement");
                 });
 
             modelBuilder.Entity("backend_template.Database.Entities.FavouriteAdvertisement", b =>

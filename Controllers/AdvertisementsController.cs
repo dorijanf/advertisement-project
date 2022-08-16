@@ -8,11 +8,11 @@ namespace backend_template.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ValuesController : ControllerBase
+    public class AdvertisementsController : ControllerBase
     {
         private readonly IAdvertisementService advertisementService;
 
-        public ValuesController(IAdvertisementService advertisementService)
+        public AdvertisementsController(IAdvertisementService advertisementService)
         {
             this.advertisementService = advertisementService;
         }
@@ -22,7 +22,7 @@ namespace backend_template.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public async Task<IEnumerable<AdvertisementDto>> Get() =>
+        public async Task<IEnumerable<AdvertisementDto>> GetAdvertisements() =>
             await advertisementService.GetAdvertisements();
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace backend_template.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("{id}")]
-        public async Task<AdvertisementDto> Get(int id) =>
+        public async Task<AdvertisementDto> GetAdvertisementById(int id) =>
             await advertisementService.GetAdvertisementById(id);
 
         /// <summary>
@@ -40,19 +40,17 @@ namespace backend_template.Controllers
         /// <param name="model"></param>
         /// <returns>id of the newly created advertisement</returns>
         [HttpPost]
-        public async Task<int> Post([FromBody] AdvertisementDto model) =>
+        public async Task<int> CreateNewAdvertisement([FromBody] AdvertisementDto model) =>
             await advertisementService.CreateNewAdvertisement(model);
 
-        // PUT api/values/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/values/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
+        /// <summary>
+        /// Finds an advertisement by id and stores it in the database together
+        /// with an email from the user which added the advertisement to their favourites.
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>id of the newly created advertisement</returns>
+        [HttpPost("{id}")]
+        public async Task<int> AddAdvertisementToFavourites([FromRoute] int id, [FromBody] string userEmail) =>
+            await advertisementService.AddAdvertisementToFavourites(id, userEmail);
     }
 }

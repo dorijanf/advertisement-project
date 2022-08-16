@@ -8,3 +8,4 @@ C:\Repos\AdvertisementProject\Database\obj\Debug\netcoreapp2.1\Database.Assembly
 C:\Repos\AdvertisementProject\Database\obj\Debug\netcoreapp2.1\Database.AssemblyInfo.cs
 C:\Repos\AdvertisementProject\Database\obj\Debug\netcoreapp2.1\Database.dll
 C:\Repos\AdvertisementProject\Database\obj\Debug\netcoreapp2.1\Database.pdb
+C:\Repos\AdvertisementProject\Database\obj\Debug\netcoreapp2.1\Database.csproj.AssemblyReference.cache
