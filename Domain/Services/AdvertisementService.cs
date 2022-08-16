@@ -1,14 +1,12 @@
 ﻿using backend_template.Database;
 using backend_template.Database.Entities;
 using SharedModels.Dtos;
-using MassTransit;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using SharedModels.Messages;
-using Microsoft.Extensions.Logging;
 
-namespace backend_template.Services
+namespace backend_template.Domain.Services
 {
     /// <summary>
     /// The main domain service for advertisements. Tasked with storing and fetching

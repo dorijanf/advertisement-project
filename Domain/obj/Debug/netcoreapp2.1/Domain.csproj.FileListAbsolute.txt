@@ -1,0 +1,14 @@
+C:\Repos\AdvertisementProject\Domain\bin\Debug\netcoreapp2.1\Domain.deps.json
+C:\Repos\AdvertisementProject\Domain\bin\Debug\netcoreapp2.1\Domain.dll
+C:\Repos\AdvertisementProject\Domain\bin\Debug\netcoreapp2.1\Domain.pdb
+C:\Repos\AdvertisementProject\Domain\bin\Debug\netcoreapp2.1\Database.dll
+C:\Repos\AdvertisementProject\Domain\bin\Debug\netcoreapp2.1\SharedModels.dll
+C:\Repos\AdvertisementProject\Domain\bin\Debug\netcoreapp2.1\Database.pdb
+C:\Repos\AdvertisementProject\Domain\bin\Debug\netcoreapp2.1\SharedModels.pdb
+C:\Repos\AdvertisementProject\Domain\obj\Debug\netcoreapp2.1\Domain.csproj.AssemblyReference.cache
+C:\Repos\AdvertisementProject\Domain\obj\Debug\netcoreapp2.1\Domain.csproj.CoreCompileInputs.cache
+C:\Repos\AdvertisementProject\Domain\obj\Debug\netcoreapp2.1\Domain.AssemblyInfoInputs.cache
+C:\Repos\AdvertisementProject\Domain\obj\Debug\netcoreapp2.1\Domain.AssemblyInfo.cs
+C:\Repos\AdvertisementProject\Domain\obj\Debug\netcoreapp2.1\Domain.csproj.CopyComplete
+C:\Repos\AdvertisementProject\Domain\obj\Debug\netcoreapp2.1\Domain.dll
+C:\Repos\AdvertisementProject\Domain\obj\Debug\netcoreapp2.1\Domain.pdb

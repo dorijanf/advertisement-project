@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace backend_template.Services
+namespace backend_template.Domain.Services
 {
     /// <summary>
     /// The main domain service for advertisements. Tasked with storing and fetching
