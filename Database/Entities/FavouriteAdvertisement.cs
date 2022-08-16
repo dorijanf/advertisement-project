@@ -4,6 +4,7 @@
     {
         public int Id { get; set; }
         public int AdvertisementId { get; set; }
-        public int UserId { get; set; }
+        public string UserEmail { get; set; }
+        public virtual Advertisement Advertisement { get; set; }
     }
 }

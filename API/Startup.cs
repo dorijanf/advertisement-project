@@ -1,4 +1,5 @@
 ﻿using backend_template.Database;
+using backend_template.Domain.Services;
 using backend_template.Services;
 using MassTransit;
 using Microsoft.AspNetCore.Builder;

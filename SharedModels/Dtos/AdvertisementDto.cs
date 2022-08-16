@@ -1,6 +1,6 @@
-﻿namespace backend_template.Database.Entities
+﻿namespace SharedModels.Dtos
 {
-    public class Advertisement
+    public class AdvertisementDto
     {
         public int Id { get; set; }
         public string Title { get; set; }
