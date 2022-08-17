@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using backend_template.Database;
+using Database;
 
 namespace backendtemplate.Migrations
 {
@@ -39,7 +40,7 @@ namespace backendtemplate.Migrations
                     b.ToTable("Advertisements");
                 });
 
-            modelBuilder.Entity("backend_template.Database.Entities.FavouriteAdvertisement", b =>
+            modelBuilder.Entity("backend_template.Database.Entities.FavoriteAdvertisement", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -53,10 +54,10 @@ namespace backendtemplate.Migrations
 
                     b.HasIndex("AdvertisementId");
 
-                    b.ToTable("FavouriteAdvertisement");
+                    b.ToTable("FavoriteAdvertisement");
                 });
 
-            modelBuilder.Entity("backend_template.Database.Entities.FavouriteAdvertisement", b =>
+            modelBuilder.Entity("backend_template.Database.Entities.FavoriteAdvertisement", b =>
                 {
                     b.HasOne("backend_template.Database.Entities.Advertisement", "Advertisement")
                         .WithMany()

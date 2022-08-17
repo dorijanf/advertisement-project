@@ -4,13 +4,13 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using backend_template.Database;
+using Database;
 
 namespace backendtemplate.Migrations
 {
     [DbContext(typeof(AdvertisementContext))]
-    [Migration("20220813173437_Favourites")]
-    partial class Favourites
+    [Migration("20220813173437_Favorites")]
+    partial class Favorites
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -39,7 +39,7 @@ namespace backendtemplate.Migrations
                     b.ToTable("Advertisements");
                 });
 
-            modelBuilder.Entity("backend_template.Database.Entities.FavouriteAdvertisement", b =>
+            modelBuilder.Entity("backend_template.Database.Entities.FavoriteAdvertisement", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -51,7 +51,7 @@ namespace backendtemplate.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("FavouriteAdvertisement");
+                    b.ToTable("FavoriteAdvertisement");
                 });
 #pragma warning restore 612, 618
         }

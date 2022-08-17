@@ -1,16 +1,18 @@
-﻿using backend_template.Database;
-using backend_template.Database.Entities;
-using SharedModels.Dtos;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using backend_template.Database;
+using backend_template.Database.Entities;
+using Database;
+using Database.Entities;
+using SharedModels.Dtos;
 using SharedModels.Messages;
 
-namespace backend_template.Domain.Services
+namespace Domain.Services
 {
     /// <summary>
     /// The main domain service for advertisements. Tasked with storing and fetching
-    /// data about adveritsements to the database.
+    /// data about advertisements to the database.
     /// </summary>
     public class AdvertisementService : IAdvertisementService
     {
@@ -65,25 +67,25 @@ namespace backend_template.Domain.Services
         }
 
         /// <summary>
-        /// Creating a new favourite advertisement entry by providing the id of the advertisement
+        /// Creating a new favorite advertisement entry by providing the id of the advertisement
         /// and the email for the user. Since there is no user table/key constraint we are not joining
         /// the user and the advertisement by their id, only the advertisement. In the end publishes
         /// the event to the message broker.
         /// </summary>
         /// <param name="id"></param>
         /// <param name="userEmail"></param>
-        /// <returns>id of favourite</returns>
-        public async Task<int> AddAdvertisementToFavourites(int id, string userEmail)
+        /// <returns>id of favorite</returns>
+        public async Task<int> AddAdvertisementToFavorites(int id, string userEmail)
         {
-            var favouriteAdvertisement = new FavouriteAdvertisement
+            var favoriteAdvertisement = new FavoriteAdvertisement
             {
                 AdvertisementId = id,
                 UserEmail = userEmail
             };
-            dbContext.FavouriteAdvertisements.Add(favouriteAdvertisement);
+            dbContext.FavoriteAdvertisements.Add(favoriteAdvertisement);
             await dbContext.SaveChangesAsync();
-            await publisherService.Publish(new FavouriteCreateMessage(id, userEmail));
-            return favouriteAdvertisement.Id;
+            await publisherService.Publish(new FavoriteCreateMessage(id, userEmail));
+            return favoriteAdvertisement.Id;
         }
 
         /// <summary>

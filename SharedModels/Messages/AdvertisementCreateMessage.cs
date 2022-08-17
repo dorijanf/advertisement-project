@@ -3,11 +3,15 @@ using System;
 
 namespace SharedModels.Messages
 {
-    public class AdvertisementCreateMessage
+    /// <summary>
+    /// When an advertisement gets created and stored in the database, this
+    /// message has to be sent.
+    /// </summary>
+    public class AdvertisementCreateMessage : IMessage
     {
         public AdvertisementCreateMessage(AdvertisementDto advertisement)
         {
-            MessageId = new Guid();
+            MessageId = Guid.NewGuid();
             Advertisement = advertisement;
             CreationDate = DateTime.Now;
         }

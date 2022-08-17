@@ -1,15 +1,15 @@
 ﻿using backend_template.Database;
-using backend_template.Domain.Services;
-using backend_template.Services;
+using Database;
 using MassTransit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RabbitMQ.Client;
-using System;
+using Domain.Services;
+using Microsoft.Extensions.Hosting;
+using SharedModels.Utils;
 
 namespace backend_template
 {
@@ -25,44 +25,44 @@ namespace backend_template
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddControllers();
             services.AddDbContext<AdvertisementContext>(options =>
             {
                 options.UseSqlServer(Configuration.GetConnectionString("Database"));
             });
 
-            var rabbitMqConfig = Configuration.GetSection("RabbitMq");
+            var rabbitMqSection = Configuration.GetSection("RabbitMq");
+            var rabbitMqConfig = rabbitMqSection.Get<RabbitMqSettings>();
 
             services.AddMassTransit(c =>
             {
                 c.AddConsumer<AdvertisementConsumer>();
             });
 
-            services.AddSingleton(provider => Bus.Factory.CreateUsingRabbitMq(config =>
+            services.AddSingleton(_ => Bus.Factory.CreateUsingRabbitMq(config =>
             {
-                var host = config.Host(new Uri(rabbitMqConfig.GetSection("Hostname").Value), "/", h =>
-                {
-                    h.Username(rabbitMqConfig.GetSection("Username").Value);
-                    h.Password(rabbitMqConfig.GetSection("Password").Value);
-                });
+                config.Host(rabbitMqConfig.HostName, rabbitMqConfig.VirtualHost,
+                    h => {
+                        h.Username(rabbitMqConfig.UserName);
+                        h.Password(rabbitMqConfig.Password);
+                    });
 
                 config.ExchangeType = ExchangeType.Direct;
             }));
-
-            services.AddScoped<IPublisherService, PublisherService>();
 
             services.AddSingleton<IPublishEndpoint>(provider => provider.GetRequiredService<IBusControl>());
             services.AddSingleton<ISendEndpointProvider>(provider => provider.GetRequiredService<IBusControl>());
             services.AddSingleton<IBus>(provider => provider.GetRequiredService<IBusControl>());
 
+            services.AddScoped<IPublisherService, PublisherService>();
+
             services.AddScoped<IAdvertisementService, AdvertisementService>();
 
             services.AddLogging();
-
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -74,7 +74,13 @@ namespace backend_template
             }
 
             app.UseHttpsRedirection();
-            app.UseMvc();
+
+            app.UseRouting();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
         }
     }
 }

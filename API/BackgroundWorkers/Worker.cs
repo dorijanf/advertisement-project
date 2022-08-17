@@ -1,5 +1,4 @@
-﻿using backend_template.Services;
-using MassTransit;
+﻿using MassTransit;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
