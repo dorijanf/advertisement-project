@@ -1,7 +1,8 @@
 ﻿using backend_template.Database.Entities;
+using Database.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace backend_template.Database
+namespace Database
 {
     public class AdvertisementContext : DbContext
     {
@@ -11,7 +12,7 @@ namespace backend_template.Database
 
         // Entities
         public DbSet<Advertisement> Advertisements { get; set; }
-        public DbSet<FavouriteAdvertisement> FavouriteAdvertisements { get; set; }
+        public DbSet<FavoriteAdvertisement> FavoriteAdvertisements { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -23,14 +24,14 @@ namespace backend_template.Database
                 .HasMaxLength(256)
                 .IsRequired();
 
-            modelBuilder.Entity<FavouriteAdvertisement>()
+            modelBuilder.Entity<FavoriteAdvertisement>()
                 .HasKey(x => x.Id);
 
-            modelBuilder.Entity<FavouriteAdvertisement>()
+            modelBuilder.Entity<FavoriteAdvertisement>()
                 .Property(x => x.AdvertisementId)
                 .IsRequired();
 
-            modelBuilder.Entity<FavouriteAdvertisement>()
+            modelBuilder.Entity<FavoriteAdvertisement>()
                 .Property(x => x.UserEmail)
                 .IsRequired();
         }

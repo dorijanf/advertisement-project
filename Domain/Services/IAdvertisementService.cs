@@ -1,12 +1,12 @@
-﻿using SharedModels.Dtos;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using SharedModels.Dtos;
 
-namespace backend_template.Domain.Services
+namespace Domain.Services
 {
     /// <summary>
     /// The main domain service for advertisements. Tasked with storing and fetching
-    /// data about adveritsements to the database.
+    /// data about advertisements to the database.
     /// </summary>
     public interface IAdvertisementService
     {
@@ -32,11 +32,11 @@ namespace backend_template.Domain.Services
         Task<int> CreateNewAdvertisement(AdvertisementDto model);
 
         /// <summary>
-        /// Creates a new favourite advertisement entry in the database.
+        /// Creates a new favorite advertisement entry in the database.
         /// </summary>
         /// <param name="id"></param>
         /// <param name="userEmail"></param>
         /// <returns></returns>
-        Task<int> AddAdvertisementToFavourites(int id, string userEmail);
+        Task<int> AddAdvertisementToFavorites(int id, string userEmail);
     }
 }

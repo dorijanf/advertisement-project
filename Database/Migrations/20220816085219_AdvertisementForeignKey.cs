@@ -12,7 +12,7 @@ namespace backendtemplate.Migrations
 
             migrationBuilder.RenameColumn(
                 name: "UserId",
-                table: "FavouriteAdvertisement",
+                table: "FavoriteAdvertisement",
                 newName: "UserEmail");
 
             migrationBuilder.AddColumn<string>(
@@ -21,13 +21,13 @@ namespace backendtemplate.Migrations
                 nullable: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_FavouriteAdvertisement_AdvertisementId",
-                table: "FavouriteAdvertisement",
+                name: "IX_FavoriteAdvertisement_AdvertisementId",
+                table: "FavoriteAdvertisement",
                 column: "AdvertisementId");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_FavouriteAdvertisement_Advertisements_AdvertisementId",
-                table: "FavouriteAdvertisement",
+                name: "FK_FavoriteAdvertisement_Advertisements_AdvertisementId",
+                table: "FavoriteAdvertisement",
                 column: "AdvertisementId",
                 principalTable: "Advertisements",
                 principalColumn: "Id",
@@ -37,12 +37,12 @@ namespace backendtemplate.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_FavouriteAdvertisement_Advertisements_AdvertisementId",
-                table: "FavouriteAdvertisement");
+                name: "FK_FavoriteAdvertisement_Advertisements_AdvertisementId",
+                table: "FavoriteAdvertisement");
 
             migrationBuilder.DropIndex(
-                name: "IX_FavouriteAdvertisement_AdvertisementId",
-                table: "FavouriteAdvertisement");
+                name: "IX_FavoriteAdvertisement_AdvertisementId",
+                table: "FavoriteAdvertisement");
 
             migrationBuilder.DropColumn(
                 name: "UserEmail",
@@ -50,7 +50,7 @@ namespace backendtemplate.Migrations
 
             migrationBuilder.RenameColumn(
                 name: "UserEmail",
-                table: "FavouriteAdvertisement",
+                table: "FavoriteAdvertisement",
                 newName: "UserId");
 
             migrationBuilder.AddColumn<int>(

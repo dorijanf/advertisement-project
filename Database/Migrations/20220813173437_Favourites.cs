@@ -3,12 +3,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace backendtemplate.Migrations
 {
-    public partial class Favourites : Migration
+    public partial class Favorites : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "FavouriteAdvertisement",
+                name: "FavoriteAdvertisement",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -18,14 +18,14 @@ namespace backendtemplate.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_FavouriteAdvertisement", x => x.Id);
+                    table.PrimaryKey("PK_FavoriteAdvertisement", x => x.Id);
                 });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "FavouriteAdvertisement");
+                name: "FavoriteAdvertisement");
         }
     }
 }

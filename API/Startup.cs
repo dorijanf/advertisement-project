@@ -1,71 +1,64 @@
-﻿using backend_template.Database;
-using backend_template.Domain.Services;
-using backend_template.Services;
-using MassTransit;
+﻿using backend_template.ServiceExtensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using RabbitMQ.Client;
-using System;
+using Microsoft.Extensions.Hosting;
 
 namespace backend_template
 {
+    /// <summary>
+    /// The startup class where all services are being registered and the main application
+    /// pipeline is defined.
+    /// </summary>
     public class Startup
     {
+        /// <param name="configuration"></param>
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
 
+        /// <summary>
+        /// Config file used to access AppSettings configuration strings.
+        /// </summary>
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+        /// <summary>
+        /// This method gets called by the runtime. Use this method to add services to the container.
+        /// </summary>
+        /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<AdvertisementContext>(options =>
-            {
-                options.UseSqlServer(Configuration.GetConnectionString("Database"));
-            });
+            services.AddControllers();
 
-            var rabbitMqConfig = Configuration.GetSection("RabbitMq");
+            services.ConfigureSwagger();
 
-            services.AddMassTransit(c =>
-            {
-                c.AddConsumer<AdvertisementConsumer>();
-            });
+            services.ConfigureDatabaseContext(Configuration);
 
-            services.AddSingleton(provider => Bus.Factory.CreateUsingRabbitMq(config =>
-            {
-                var host = config.Host(new Uri(rabbitMqConfig.GetSection("Hostname").Value), "/", h =>
-                {
-                    h.Username(rabbitMqConfig.GetSection("Username").Value);
-                    h.Password(rabbitMqConfig.GetSection("Password").Value);
-                });
+            services.ConfigureRabbitMq(Configuration);
 
-                config.ExchangeType = ExchangeType.Direct;
-            }));
+            services.ConfigureElasticSearch(Configuration);
 
-            services.AddScoped<IPublisherService, PublisherService>();
-
-            services.AddSingleton<IPublishEndpoint>(provider => provider.GetRequiredService<IBusControl>());
-            services.AddSingleton<ISendEndpointProvider>(provider => provider.GetRequiredService<IBusControl>());
-            services.AddSingleton<IBus>(provider => provider.GetRequiredService<IBusControl>());
-
-            services.AddScoped<IAdvertisementService, AdvertisementService>();
+            services.ConfigureScopedServices();
 
             services.AddLogging();
-
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        /// <summary>
+        /// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        /// </summary>
+        /// <param name="app"></param>
+        /// <param name="env"></param>
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
+                app.UseSwagger();
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Advertisement API V1");
+                });
                 app.UseDeveloperExceptionPage();
             }
             else
@@ -74,7 +67,13 @@ namespace backend_template
             }
 
             app.UseHttpsRedirection();
-            app.UseMvc();
+
+            app.UseRouting();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
         }
     }
 }
