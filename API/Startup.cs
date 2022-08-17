@@ -1,71 +1,64 @@
-﻿using backend_template.Database;
-using Database;
-using MassTransit;
+﻿using backend_template.ServiceExtensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using RabbitMQ.Client;
-using Domain.Services;
 using Microsoft.Extensions.Hosting;
-using SharedModels.Utils;
 
 namespace backend_template
 {
+    /// <summary>
+    /// The startup class where all services are being registered and the main application
+    /// pipeline is defined.
+    /// </summary>
     public class Startup
     {
+        /// <param name="configuration"></param>
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
 
+        /// <summary>
+        /// Config file used to access AppSettings configuration strings.
+        /// </summary>
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+        /// <summary>
+        /// This method gets called by the runtime. Use this method to add services to the container.
+        /// </summary>
+        /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddDbContext<AdvertisementContext>(options =>
-            {
-                options.UseSqlServer(Configuration.GetConnectionString("Database"));
-            });
 
-            var rabbitMqSection = Configuration.GetSection("RabbitMq");
-            var rabbitMqConfig = rabbitMqSection.Get<RabbitMqSettings>();
+            services.ConfigureSwagger();
 
-            services.AddMassTransit(c =>
-            {
-                c.AddConsumer<AdvertisementConsumer>();
-            });
+            services.ConfigureDatabaseContext(Configuration);
 
-            services.AddSingleton(_ => Bus.Factory.CreateUsingRabbitMq(config =>
-            {
-                config.Host(rabbitMqConfig.HostName, rabbitMqConfig.VirtualHost,
-                    h => {
-                        h.Username(rabbitMqConfig.UserName);
-                        h.Password(rabbitMqConfig.Password);
-                    });
+            services.ConfigureRabbitMq(Configuration);
 
-                config.ExchangeType = ExchangeType.Direct;
-            }));
+            services.ConfigureElasticSearch(Configuration);
 
-            services.AddSingleton<IPublishEndpoint>(provider => provider.GetRequiredService<IBusControl>());
-            services.AddSingleton<ISendEndpointProvider>(provider => provider.GetRequiredService<IBusControl>());
-            services.AddSingleton<IBus>(provider => provider.GetRequiredService<IBusControl>());
-
-            services.AddScoped<IPublisherService, PublisherService>();
-
-            services.AddScoped<IAdvertisementService, AdvertisementService>();
+            services.ConfigureScopedServices();
 
             services.AddLogging();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        /// <summary>
+        /// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        /// </summary>
+        /// <param name="app"></param>
+        /// <param name="env"></param>
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
+                app.UseSwagger();
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Advertisement API V1");
+                });
                 app.UseDeveloperExceptionPage();
             }
             else

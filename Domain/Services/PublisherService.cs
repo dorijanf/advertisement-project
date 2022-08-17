@@ -37,7 +37,7 @@ namespace Domain.Services
             }
             catch (Exception ex)
             {
-                logger.LogWarning($"Error when publishing: {ex.Message}");
+                logger.LogError($"Error when publishing: {ex.Message}");
             }
         }
     }

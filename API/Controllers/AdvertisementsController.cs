@@ -18,7 +18,7 @@ namespace backend_template.Controllers
         }
 
         /// <summary>
-        /// Gets a list of all advertisements containing the title, id and user id.
+        /// Gets a list of all advertisements.
         /// </summary>
         /// <returns></returns>
         [HttpGet]
@@ -26,7 +26,7 @@ namespace backend_template.Controllers
             await advertisementService.GetAdvertisements();
 
         /// <summary>
-        /// Gets a single AdvertisementDto object by its id.
+        /// Gets a single advertisement object by its id.
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -35,7 +35,7 @@ namespace backend_template.Controllers
             await advertisementService.GetAdvertisementById(id);
 
         /// <summary>
-        /// Creates a new advertisement and stores it in the database.
+        /// Creates a new advertisement.
         /// </summary>
         /// <param name="model"></param>
         /// <returns>id of the newly created advertisement</returns>
@@ -44,8 +44,7 @@ namespace backend_template.Controllers
             await advertisementService.CreateNewAdvertisement(model);
 
         /// <summary>
-        /// Finds an advertisement by id and stores it in the database together
-        /// with an email from the user which added the advertisement to their favorites.
+        /// Adds an advertisement to a favorite for a user email which is provided in the body of the request.
         /// </summary>
         /// <param name="id"></param>
         /// <param name="userEmail"></param>
