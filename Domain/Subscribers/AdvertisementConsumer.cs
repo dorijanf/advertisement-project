@@ -24,8 +24,8 @@ namespace Domain.Subscribers
         }
 
         /// <summary>
-        /// First we try to index the document in elastic search after which we respond to the message
-        /// received.
+        /// When we receive the message we need to store it in elastic search and in case the operation
+        /// fails we need to rollback and mark the document as failed to synchronize.
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
@@ -34,12 +34,6 @@ namespace Domain.Subscribers
             try
             {
                 await elasticClient.IndexDocumentAsync(context.Message.Advertisement);
-
-                await context.RespondAsync(new
-                {
-                    Message = $"Message {context.Message.MessageId} received.",
-                    Success = true
-                });
             }
             catch (Exception ex)
             {

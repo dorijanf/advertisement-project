@@ -12,6 +12,7 @@ namespace Database
         // Entities
         public DbSet<Advertisement> Advertisements { get; set; }
         public DbSet<FavoriteAdvertisement> FavoriteAdvertisements { get; set; }
+        public DbSet<EmailQueue> EmailQueues { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -33,6 +34,9 @@ namespace Database
             modelBuilder.Entity<FavoriteAdvertisement>()
                 .Property(x => x.UserEmail)
                 .IsRequired();
+
+            modelBuilder.Entity<EmailQueue>()
+                .HasKey(x => x.Id);
         }
     }
 }

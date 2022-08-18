@@ -72,16 +72,6 @@ namespace Domain.Services
         /// <returns>id of new advertisement</returns>
         public async Task<int> CreateNewAdvertisement(AdvertisementDto model)
         {
-            if (string.IsNullOrEmpty(model.UserEmail))
-            {
-                throw new BadRequestException("User email is required.");
-            }
-
-            if (string.IsNullOrEmpty(model.Title))
-            {
-                throw new BadRequestException("Title is required.");
-            }
-
             var advertisement = CreateAdvertisementEntity(model);
             dbContext.Add(advertisement);
             await dbContext.SaveChangesAsync();
@@ -102,17 +92,19 @@ namespace Domain.Services
         /// <returns>id of favorite</returns>
         public async Task<int> AddAdvertisementToFavorites(int id, string userEmail)
         {
+            var advertisement = await GetAdvertisementById(id);
+
             var favoriteAdvertisement = new FavoriteAdvertisement
             {
-                AdvertisementId = id,
-                UserEmail = userEmail
+                AdvertisementId = advertisement.Id,
+                UserEmail = advertisement.UserEmail
             };
 
             dbContext.FavoriteAdvertisements.Add(favoriteAdvertisement);
 
             await dbContext.SaveChangesAsync();
 
-            await publisherService.Publish(new FavoriteCreateMessage(id, userEmail));
+            await publisherService.Publish(new FavoriteCreateMessage(id, userEmail, advertisement.Title));
 
             return favoriteAdvertisement.Id;
         }

@@ -66,6 +66,17 @@ namespace backend_template.ServiceExtensions
 
             services.AddMassTransit(config =>
             {
+
+                config.AddConsumer<FavoriteConsumer>().Endpoint(e =>
+                {
+                    e.ConcurrentMessageLimit = 10;
+                });
+
+                config.AddConsumer<AdvertisementConsumer>().Endpoint(e =>
+                {
+                    e.ConcurrentMessageLimit = 10;
+                });
+
                 config.UsingRabbitMq((context, cfg) =>
                 {
                     cfg.Host(rabbitMqSettings.HostName, rabbitMqSettings.VirtualHost,
@@ -77,15 +88,7 @@ namespace backend_template.ServiceExtensions
                     cfg.ExchangeType = ExchangeType.Direct;
 
                     cfg.ConfigureEndpoints(context);
-
                 });
-
-                config.AddConsumer<AdvertisementConsumer>().Endpoint(e =>
-                {
-                    e.ConcurrentMessageLimit = 10;
-                });
-
-
             });
 
             services.AddSingleton<IPublishEndpoint>(provider => provider.GetRequiredService<IBusControl>());
@@ -116,6 +119,8 @@ namespace backend_template.ServiceExtensions
             services.AddSingleton<IPublisherService, PublisherService>();
 
             services.AddScoped<IAdvertisementService, AdvertisementService>();
+
+            services.AddScoped<IEmailSenderService, EmailSenderService>();
         }
 
         /// <summary>
