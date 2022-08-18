@@ -34,6 +34,7 @@ namespace Domain.Subscribers
             try
             {
                 await elasticClient.IndexDocumentAsync(context.Message.Advertisement);
+
                 await context.RespondAsync(new
                 {
                     Message = $"Message {context.Message.MessageId} received.",

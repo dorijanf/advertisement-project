@@ -1,7 +1,6 @@
 ﻿using backend_template.Middleware;
 using backend_template.ServiceExtensions;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -42,7 +41,7 @@ namespace backend_template
 
             services.ConfigureElasticSearch(Configuration);
 
-            services.ConfigureScopedServices();
+            services.AddServices();
 
             services.AddLogging();
         }

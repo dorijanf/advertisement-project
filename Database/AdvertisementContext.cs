@@ -1,5 +1,4 @@
-﻿using backend_template.Database.Entities;
-using Database.Entities;
+﻿using Database.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Database

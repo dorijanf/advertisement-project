@@ -66,7 +66,6 @@ namespace backend_template.ServiceExtensions
 
             services.AddMassTransit(config =>
             {
-                config.AddConsumer<AdvertisementConsumer>();
                 config.UsingRabbitMq((context, cfg) =>
                 {
                     cfg.Host(rabbitMqSettings.HostName, rabbitMqSettings.VirtualHost,
@@ -78,7 +77,15 @@ namespace backend_template.ServiceExtensions
                     cfg.ExchangeType = ExchangeType.Direct;
 
                     cfg.ConfigureEndpoints(context);
+
                 });
+
+                config.AddConsumer<AdvertisementConsumer>().Endpoint(e =>
+                {
+                    e.ConcurrentMessageLimit = 10;
+                });
+
+
             });
 
             services.AddSingleton<IPublishEndpoint>(provider => provider.GetRequiredService<IBusControl>());
@@ -104,9 +111,9 @@ namespace backend_template.ServiceExtensions
         /// Configures all scoped services for the API.
         /// </summary>
         /// <param name="services"></param>
-        public static void ConfigureScopedServices(this IServiceCollection services)
+        public static void AddServices(this IServiceCollection services)
         {
-            services.AddScoped<IPublisherService, PublisherService>();
+            services.AddSingleton<IPublisherService, PublisherService>();
 
             services.AddScoped<IAdvertisementService, AdvertisementService>();
         }

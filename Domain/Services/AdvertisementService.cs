@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using backend_template.Database.Entities;
 using Database;
 using Database.Entities;
 using Nest;

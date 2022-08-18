@@ -1,4 +1,4 @@
-﻿namespace backend_template.Database.Entities
+﻿namespace Database.Entities
 {
     public class Advertisement
     {
@@ -6,5 +6,6 @@
         public string Title { get; set; }
         public string Content { get; set; }
         public string UserEmail { get; set; }
+        public bool FailedToSync { get; set; }
     }
 }
