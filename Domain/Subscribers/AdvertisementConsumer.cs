@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 using Nest;
 using SharedModels.Messages;
 
-namespace Domain.Services
+namespace Domain.Subscribers
 {
     /// <summary>
     /// Mass transit consumer service which consumes the <see cref="AdvertisementCreateMessage"/>

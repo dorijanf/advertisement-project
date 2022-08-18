@@ -1,5 +1,7 @@
-﻿using backend_template.ServiceExtensions;
+﻿using backend_template.Middleware;
+using backend_template.ServiceExtensions;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -59,12 +61,13 @@ namespace backend_template
                 {
                     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Advertisement API V1");
                 });
-                app.UseDeveloperExceptionPage();
             }
             else
             {
                 app.UseHsts();
             }
+
+            app.UseMiddleware<ExceptionHandler>();
 
             app.UseHttpsRedirection();
 

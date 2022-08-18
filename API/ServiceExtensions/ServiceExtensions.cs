@@ -3,6 +3,7 @@ using System.IO;
 using System.Reflection;
 using Database;
 using Domain.Services;
+using Domain.Subscribers;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
