@@ -14,7 +14,7 @@ namespace Domain.Services
         /// Returns a list of all advertisements.
         /// </summary>
         /// <returns></returns>
-        Task<IEnumerable<AdvertisementDto>> GetAdvertisements();
+        Task<IEnumerable<AdvertisementDto>> GetAdvertisements(string query, int page, int pageSize);
 
         /// <summary>
         /// Returns a single advertisement transfer object by its id.

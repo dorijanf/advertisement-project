@@ -1,4 +1,5 @@
-﻿using backend_template.ServiceExtensions;
+﻿using backend_template.Middleware;
+using backend_template.ServiceExtensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -40,7 +41,7 @@ namespace backend_template
 
             services.ConfigureElasticSearch(Configuration);
 
-            services.ConfigureScopedServices();
+            services.AddServices();
 
             services.AddLogging();
         }
@@ -59,12 +60,13 @@ namespace backend_template
                 {
                     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Advertisement API V1");
                 });
-                app.UseDeveloperExceptionPage();
             }
             else
             {
                 app.UseHsts();
             }
+
+            app.UseMiddleware<ExceptionHandler>();
 
             app.UseHttpsRedirection();
 

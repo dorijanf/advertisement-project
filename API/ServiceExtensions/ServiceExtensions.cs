@@ -3,6 +3,7 @@ using System.IO;
 using System.Reflection;
 using Database;
 using Domain.Services;
+using Domain.Subscribers;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -11,6 +12,7 @@ using Microsoft.OpenApi.Models;
 using Nest;
 using RabbitMQ.Client;
 using SharedModels.Dtos;
+using SharedModels.Exceptions;
 using SharedModels.Utils;
 
 namespace backend_template.ServiceExtensions
@@ -65,11 +67,27 @@ namespace backend_template.ServiceExtensions
 
             services.AddMassTransit(config =>
             {
-                config.AddConsumer<AdvertisementConsumer>();
+                config.AddConsumer<FavoriteConsumer>().Endpoint(e =>
+                {
+                    e.ConcurrentMessageLimit = 10;
+                });
+
+                config.AddConsumer<AdvertisementConsumer>(c =>
+                    c.UseMessageRetry(r =>
+                    {
+                        r.Interval(2, TimeSpan.FromSeconds(5));
+                        r.Handle<ElasticSearchError>();
+                    }))
+                    .Endpoint(e =>
+                    {
+                        e.ConcurrentMessageLimit = 10;
+                    });
+
                 config.UsingRabbitMq((context, cfg) =>
                 {
                     cfg.Host(rabbitMqSettings.HostName, rabbitMqSettings.VirtualHost,
-                        h => {
+                        h =>
+                        {
                             h.Username(rabbitMqSettings.UserName);
                             h.Password(rabbitMqSettings.Password);
                         });
@@ -103,11 +121,13 @@ namespace backend_template.ServiceExtensions
         /// Configures all scoped services for the API.
         /// </summary>
         /// <param name="services"></param>
-        public static void ConfigureScopedServices(this IServiceCollection services)
+        public static void AddServices(this IServiceCollection services)
         {
-            services.AddScoped<IPublisherService, PublisherService>();
+            services.AddSingleton<IPublisherService, PublisherService>();
 
             services.AddScoped<IAdvertisementService, AdvertisementService>();
+
+            services.AddScoped<IEmailSenderService, EmailSenderService>();
         }
 
         /// <summary>

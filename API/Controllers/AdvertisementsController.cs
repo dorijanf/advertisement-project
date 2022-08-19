@@ -22,8 +22,8 @@ namespace backend_template.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public async Task<IEnumerable<AdvertisementDto>> GetAdvertisements() =>
-            await advertisementService.GetAdvertisements();
+        public async Task<IEnumerable<AdvertisementDto>> GetAdvertisements(string query, int page = 1, int pageSize = 50) =>
+            await advertisementService.GetAdvertisements(query, page, pageSize);
 
         /// <summary>
         /// Gets a single advertisement object by its id.

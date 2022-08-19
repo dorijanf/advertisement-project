@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using backend_template.Database;
-using backend_template.Database.Entities;
 using Database;
 using Database.Entities;
+using Nest;
 using SharedModels.Dtos;
+using SharedModels.Exceptions;
 using SharedModels.Messages;
 
 namespace Domain.Services
@@ -18,12 +17,15 @@ namespace Domain.Services
     {
 
         private readonly IPublisherService publisherService;
+        private readonly IElasticClient elasticClient;
         private readonly AdvertisementContext dbContext;
 
         public AdvertisementService(IPublisherService publisherService,
+            IElasticClient elasticClient,
             AdvertisementContext dbContext)
         {
             this.publisherService = publisherService;
+            this.elasticClient = elasticClient;
             this.dbContext = dbContext;
         }
 
@@ -32,10 +34,15 @@ namespace Domain.Services
         /// the entity to a dto.
         /// </summary>
         /// <returns></returns>
-        public async Task<IEnumerable<AdvertisementDto>> GetAdvertisements()
+        public async Task<IEnumerable<AdvertisementDto>> GetAdvertisements(string query, int page,
+            int pageSize)
         {
-            // TODO: fetch from elastic 
-            throw new NotImplementedException();
+            var response = await elasticClient.SearchAsync<AdvertisementDto>(
+                s => s.Query(q => q.QueryString(d => d.Query(query)))
+                    .From((page - 1) * pageSize)
+                    .Size(pageSize));
+
+            return !response.IsValid ? new List<AdvertisementDto>() : response.Documents;
         }
 
         /// <summary>
@@ -45,8 +52,14 @@ namespace Domain.Services
         /// <returns></returns>
         public async Task<AdvertisementDto> GetAdvertisementById(int id)
         {
-            // TODO: fetch from elastic 
-            throw new NotImplementedException();
+            var advertisement = await dbContext.Advertisements.FindAsync(id);
+
+            if (advertisement is null)
+            {
+                throw new NotFoundException();
+            }
+
+            return CreateAdvertisementDto(advertisement);
         }
 
 
@@ -62,7 +75,9 @@ namespace Domain.Services
             var advertisement = CreateAdvertisementEntity(model);
             dbContext.Add(advertisement);
             await dbContext.SaveChangesAsync();
-            await publisherService.Publish(new AdvertisementCreateMessage(model));
+
+            await publisherService.Publish(new AdvertisementCreateMessage(CreateAdvertisementDto(advertisement)));
+
             return advertisement.Id;
         }
 
@@ -77,14 +92,20 @@ namespace Domain.Services
         /// <returns>id of favorite</returns>
         public async Task<int> AddAdvertisementToFavorites(int id, string userEmail)
         {
+            var advertisement = await GetAdvertisementById(id);
+
             var favoriteAdvertisement = new FavoriteAdvertisement
             {
-                AdvertisementId = id,
-                UserEmail = userEmail
+                AdvertisementId = advertisement.Id,
+                UserEmail = advertisement.UserEmail
             };
+
             dbContext.FavoriteAdvertisements.Add(favoriteAdvertisement);
+
             await dbContext.SaveChangesAsync();
-            await publisherService.Publish(new FavoriteCreateMessage(id, userEmail));
+
+            await publisherService.Publish(new FavoriteCreateMessage(id, userEmail, advertisement.Title));
+
             return favoriteAdvertisement.Id;
         }
 

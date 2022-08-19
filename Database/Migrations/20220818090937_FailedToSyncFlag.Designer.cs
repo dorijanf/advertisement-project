@@ -3,6 +3,7 @@ using Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace backendtemplate.Migrations
 {
     [DbContext(typeof(AdvertisementContext))]
-    partial class AdvertisementContextModelSnapshot : ModelSnapshot
+    [Migration("20220818090937_FailedToSyncFlag")]
+    partial class FailedToSyncFlag
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -46,25 +48,6 @@ namespace backendtemplate.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Advertisements");
-                });
-
-            modelBuilder.Entity("Database.Entities.EmailQueue", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Content")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SendTo")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("EmailQueues");
                 });
 
             modelBuilder.Entity("Database.Entities.FavoriteAdvertisement", b =>

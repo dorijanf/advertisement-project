@@ -1,6 +1,4 @@
-﻿using backend_template.Database.Entities;
-
-namespace Database.Entities
+﻿namespace Database.Entities
 {
     public class FavoriteAdvertisement
     {
