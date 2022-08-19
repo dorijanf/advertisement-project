@@ -12,6 +12,7 @@ using Microsoft.OpenApi.Models;
 using Nest;
 using RabbitMQ.Client;
 using SharedModels.Dtos;
+using SharedModels.Exceptions;
 using SharedModels.Utils;
 
 namespace backend_template.ServiceExtensions
@@ -66,21 +67,27 @@ namespace backend_template.ServiceExtensions
 
             services.AddMassTransit(config =>
             {
-
                 config.AddConsumer<FavoriteConsumer>().Endpoint(e =>
                 {
                     e.ConcurrentMessageLimit = 10;
                 });
 
-                config.AddConsumer<AdvertisementConsumer>().Endpoint(e =>
-                {
-                    e.ConcurrentMessageLimit = 10;
-                });
+                config.AddConsumer<AdvertisementConsumer>(c =>
+                    c.UseMessageRetry(r =>
+                    {
+                        r.Interval(2, TimeSpan.FromSeconds(5));
+                        r.Handle<ElasticSearchError>();
+                    }))
+                    .Endpoint(e =>
+                    {
+                        e.ConcurrentMessageLimit = 10;
+                    });
 
                 config.UsingRabbitMq((context, cfg) =>
                 {
                     cfg.Host(rabbitMqSettings.HostName, rabbitMqSettings.VirtualHost,
-                        h => {
+                        h =>
+                        {
                             h.Username(rabbitMqSettings.UserName);
                             h.Password(rabbitMqSettings.Password);
                         });

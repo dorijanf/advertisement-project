@@ -1,8 +1,8 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Database;
 using MassTransit;
-using Microsoft.Extensions.Logging;
 using Nest;
+using SharedModels.Exceptions;
 using SharedModels.Messages;
 
 namespace Domain.Subscribers
@@ -13,14 +13,15 @@ namespace Domain.Subscribers
     /// </summary>
     public class AdvertisementConsumer : IConsumer<AdvertisementCreateMessage>
     {
-        private readonly ILogger<AdvertisementConsumer> logger;
         private readonly IElasticClient elasticClient;
+        private readonly AdvertisementContext dbContext;
 
-        public AdvertisementConsumer(ILogger<AdvertisementConsumer> logger, 
-            IElasticClient elasticClient)
+        public AdvertisementConsumer(
+            IElasticClient elasticClient,
+            AdvertisementContext dbContext)
         {
-            this.logger = logger;
             this.elasticClient = elasticClient;
+            this.dbContext = dbContext;
         }
 
         /// <summary>
@@ -31,14 +32,45 @@ namespace Domain.Subscribers
         /// <returns></returns>
         public async Task Consume(ConsumeContext<AdvertisementCreateMessage> context)
         {
-            try
+            var retryCount = context.GetRetryAttempt();
+            if (retryCount < 2)
             {
-                await elasticClient.IndexDocumentAsync(context.Message.Advertisement);
+                var pingResponse = await elasticClient.PingAsync();
+
+                if (pingResponse.IsValid)
+                {
+                    var indexResponse = await elasticClient.IndexDocumentAsync(context.Message.Advertisement);
+                    if (!indexResponse.IsValid)
+                    {
+                        throw new ElasticSearchError(indexResponse.OriginalException.Message);
+                    }
+                }
+                else
+                {
+                    throw new ElasticSearchError(pingResponse.OriginalException.Message);
+                }
             }
-            catch (Exception ex)
+            else
             {
-                logger.LogError($"Error when consuming advertisement create message: {ex.Message}");
+                await MarkAsFailedToSynchronize(context.Message.Advertisement.Id);
             }
+
+        }
+
+        /// <summary>
+        /// Mark the advertisement as failed to synchronize in database.
+        /// </summary>
+        /// <returns></returns>
+        private async Task MarkAsFailedToSynchronize(int id)
+        {
+            var advertisement = await dbContext.Advertisements.FindAsync(id);
+
+            if (advertisement is not null)
+            {
+                advertisement.FailedToSync = advertisement.FailedToSync is not true;
+            }
+
+            await dbContext.SaveChangesAsync();
         }
     }
 }
