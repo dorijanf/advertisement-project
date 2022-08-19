@@ -3,6 +3,8 @@ using System.IO;
 using System.Reflection;
 using Database;
 using Domain.Services;
+using Domain.StateMachines;
+using Domain.States;
 using Domain.Subscribers;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
@@ -72,10 +74,13 @@ namespace backend_template.ServiceExtensions
                     e.ConcurrentMessageLimit = 10;
                 });
 
-                config.AddConsumer<AdvertisementConsumer>().Endpoint(e =>
+                config.AddConsumer<FailedToSynchronizeConsumer>().Endpoint(e =>
                 {
                     e.ConcurrentMessageLimit = 10;
                 });
+
+                config.AddSagaStateMachine<AdvertisementStateMachine, AdvertisementState>()
+                    .InMemoryRepository();
 
                 config.UsingRabbitMq((context, cfg) =>
                 {
