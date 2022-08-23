@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using SharedModels.Messages;
 
-namespace Domain.Services
+namespace Domain.Interfaces
 {
     /// <summary>
     /// Service which publishes messages to the message broker (RabbitMq)

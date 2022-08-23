@@ -1,17 +1,21 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Domain.Services;
+using Domain.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using SharedModels.Dtos;
 
 namespace backend_template.Controllers
 {
+    /// <summary>
+    /// Handles all requests regarding the advertisement entity.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class AdvertisementsController : ControllerBase
     {
         private readonly IAdvertisementService advertisementService;
 
+        /// <param name="advertisementService"></param>
         public AdvertisementsController(IAdvertisementService advertisementService)
         {
             this.advertisementService = advertisementService;
@@ -22,7 +26,7 @@ namespace backend_template.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public async Task<IEnumerable<AdvertisementDto>> GetAdvertisements(string query, int page = 1, int pageSize = 50) =>
+        public async Task<IEnumerable<AdvertisementDto>> GetAdvertisements([FromQuery] string query, [FromQuery] int page = 1, [FromQuery] int pageSize = 50) =>
             await advertisementService.GetAdvertisements(query, page, pageSize);
 
         /// <summary>
@@ -47,10 +51,10 @@ namespace backend_template.Controllers
         /// Adds an advertisement to a favorite for a user email which is provided in the body of the request.
         /// </summary>
         /// <param name="id"></param>
-        /// <param name="userEmail"></param>
+        /// <param name="model"></param>
         /// <returns>id of the newly created advertisement</returns>
         [HttpPost("{id:int}")]
-        public async Task<int> AddAdvertisementToFavorites([FromRoute] int id, [FromBody] string userEmail) =>
-            await advertisementService.AddAdvertisementToFavorites(id, userEmail);
+        public async Task<int> AddAdvertisementToFavorites([FromRoute] int id, [FromBody] FavoriteDto model) =>
+            await advertisementService.AddAdvertisementToFavorites(id, model);
     }
 }
