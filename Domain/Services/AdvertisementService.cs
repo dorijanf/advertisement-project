@@ -83,7 +83,7 @@ namespace Domain.Services
                 return advertisement.Id;
             }
 
-            return -1;
+            return insertedRecords;
         }
 
         /// <summary>
@@ -114,7 +114,7 @@ namespace Domain.Services
                 return favoriteAdvertisement.Id;
             }
 
-            return -1;
+            return insertedRecords;
         }
 
         /// <summary>
