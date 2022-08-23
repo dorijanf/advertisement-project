@@ -51,10 +51,10 @@ namespace backend_template.Controllers
         /// Adds an advertisement to a favorite for a user email which is provided in the body of the request.
         /// </summary>
         /// <param name="id"></param>
-        /// <param name="userEmail"></param>
+        /// <param name="model"></param>
         /// <returns>id of the newly created advertisement</returns>
         [HttpPost("{id:int}")]
-        public async Task<int> AddAdvertisementToFavorites([FromRoute] int id, [FromBody] string userEmail) =>
-            await advertisementService.AddAdvertisementToFavorites(id, userEmail);
+        public async Task<int> AddAdvertisementToFavorites([FromRoute] int id, [FromBody] FavoriteDto model) =>
+            await advertisementService.AddAdvertisementToFavorites(id, model);
     }
 }

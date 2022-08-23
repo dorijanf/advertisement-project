@@ -137,6 +137,8 @@ namespace backend_template.ServiceExtensions
 
             services.AddTransient<IValidator<AdvertisementDto>, AdvertisementValidator>();
 
+            services.AddTransient<IValidator<FavoriteDto>, FavoriteValidator>();
+
             services.AddScoped(typeof(Domain.Interfaces.IRepository<>), typeof(Repository<>));
         }
 

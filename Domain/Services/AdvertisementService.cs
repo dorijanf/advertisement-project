@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Database.Entities;
 using Domain.Interfaces;
+using Domain.Validators;
 using FluentValidation;
 using Nest;
 using SharedModels.Dtos;
@@ -20,18 +21,21 @@ namespace Domain.Services
         private readonly IElasticClient elasticClient;
         private readonly Interfaces.IRepository<Advertisement> advertisementRepository;
         private readonly Interfaces.IRepository<FavoriteAdvertisement> favoriteRepository;
+        private readonly IValidator<FavoriteDto> favoriteValidator;
         private readonly IValidator<AdvertisementDto> advertisementValidator;
 
         public AdvertisementService(IPublisherService publisherService,
             IElasticClient elasticClient,
             Interfaces.IRepository<Advertisement> advertisementRepository,
             Interfaces.IRepository<FavoriteAdvertisement> favoriteRepository,
+            IValidator<FavoriteDto> favoriteValidator,
             IValidator<AdvertisementDto> advertisementValidator)
         {
             this.publisherService = publisherService;
             this.elasticClient = elasticClient;
             this.advertisementRepository = advertisementRepository;
             this.favoriteRepository = favoriteRepository;
+            this.favoriteValidator = favoriteValidator;
             this.advertisementValidator = advertisementValidator;
         }
 
@@ -74,6 +78,7 @@ namespace Domain.Services
         public async Task<int> CreateNewAdvertisement(AdvertisementDto model)
         {
             await advertisementValidator.ValidateAndThrowAsync(model);
+
             var advertisement = CreateAdvertisementEntity(model);
             var insertedRecords = await advertisementRepository.Insert(advertisement);
 
@@ -93,10 +98,12 @@ namespace Domain.Services
         /// the event to the message broker.
         /// </summary>
         /// <param name="id"></param>
-        /// <param name="userEmail"></param>
+        /// <param name="model"></param>
         /// <returns>id of favorite</returns>
-        public async Task<int> AddAdvertisementToFavorites(int id, string userEmail)
+        public async Task<int> AddAdvertisementToFavorites(int id, FavoriteDto model)
         {
+            await favoriteValidator.ValidateAndThrowAsync(model);
+
             var advertisement = await GetAdvertisementById(id);
 
             var favoriteAdvertisement = new FavoriteAdvertisement
@@ -109,7 +116,7 @@ namespace Domain.Services
 
             if (insertedRecords > 0)
             {
-                await publisherService.Publish(new FavoriteCreateMessage(id, userEmail, advertisement.Title));
+                await publisherService.Publish(new FavoriteCreateMessage(id, model.UserEmail, advertisement.Title));
 
                 return favoriteAdvertisement.Id;
             }

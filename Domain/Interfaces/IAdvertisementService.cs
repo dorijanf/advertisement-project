@@ -35,8 +35,8 @@ namespace Domain.Interfaces
         /// Creates a new favorite advertisement entry in the database.
         /// </summary>
         /// <param name="id"></param>
-        /// <param name="userEmail"></param>
+        /// <param name="model"></param>
         /// <returns></returns>
-        Task<int> AddAdvertisementToFavorites(int id, string userEmail);
+        Task<int> AddAdvertisementToFavorites(int id, FavoriteDto model);
     }
 }
