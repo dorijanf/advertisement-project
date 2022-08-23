@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Database;
 using Database.Entities;
+using FluentValidation;
 using Nest;
 using SharedModels.Dtos;
 using SharedModels.Exceptions;
@@ -19,14 +20,17 @@ namespace Domain.Services
         private readonly IPublisherService publisherService;
         private readonly IElasticClient elasticClient;
         private readonly AdvertisementContext dbContext;
+        private readonly IValidator<AdvertisementDto> advertisementValidator;
 
         public AdvertisementService(IPublisherService publisherService,
             IElasticClient elasticClient,
-            AdvertisementContext dbContext)
+            AdvertisementContext dbContext,
+            IValidator<AdvertisementDto> advertisementValidator)
         {
             this.publisherService = publisherService;
             this.elasticClient = elasticClient;
             this.dbContext = dbContext;
+            this.advertisementValidator = advertisementValidator;
         }
 
         /// <summary>
@@ -72,6 +76,7 @@ namespace Domain.Services
         /// <returns>id of new advertisement</returns>
         public async Task<int> CreateNewAdvertisement(AdvertisementDto model)
         {
+            await advertisementValidator.ValidateAndThrowAsync(model);
             var advertisement = CreateAdvertisementEntity(model);
             dbContext.Add(advertisement);
             await dbContext.SaveChangesAsync();

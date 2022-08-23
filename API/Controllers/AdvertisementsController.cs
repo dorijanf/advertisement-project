@@ -6,12 +6,16 @@ using SharedModels.Dtos;
 
 namespace backend_template.Controllers
 {
+    /// <summary>
+    /// Handles all requests regarding the advertisement entity.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class AdvertisementsController : ControllerBase
     {
         private readonly IAdvertisementService advertisementService;
 
+        /// <param name="advertisementService"></param>
         public AdvertisementsController(IAdvertisementService advertisementService)
         {
             this.advertisementService = advertisementService;
@@ -22,7 +26,7 @@ namespace backend_template.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public async Task<IEnumerable<AdvertisementDto>> GetAdvertisements(string query, int page = 1, int pageSize = 50) =>
+        public async Task<IEnumerable<AdvertisementDto>> GetAdvertisements([FromQuery] string query, [FromQuery] int page = 1, [FromQuery] int pageSize = 50) =>
             await advertisementService.GetAdvertisements(query, page, pageSize);
 
         /// <summary>

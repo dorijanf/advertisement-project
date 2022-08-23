@@ -1,5 +1,6 @@
 ﻿using backend_template.Middleware;
 using backend_template.ServiceExtensions;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;

@@ -2,6 +2,7 @@
 using System.Net;
 using System.Text.Json;
 using System.Threading.Tasks;
+using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using SharedModels.Exceptions;
@@ -54,6 +55,7 @@ namespace backend_template.Middleware
             {
                 NotFoundException => HttpStatusCode.NotFound,
                 BadRequestException => HttpStatusCode.BadRequest,
+                ValidationException => HttpStatusCode.BadRequest,
                 _ => HttpStatusCode.InternalServerError,
             };
 

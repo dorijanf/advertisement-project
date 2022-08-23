@@ -4,6 +4,8 @@ using System.Reflection;
 using Database;
 using Domain.Services;
 using Domain.Subscribers;
+using Domain.Validators;
+using FluentValidation;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -128,6 +130,8 @@ namespace backend_template.ServiceExtensions
             services.AddScoped<IAdvertisementService, AdvertisementService>();
 
             services.AddScoped<IEmailSenderService, EmailSenderService>();
+
+            services.AddTransient<IValidator<AdvertisementDto>, AdvertisementValidator>();
         }
 
         /// <summary>
