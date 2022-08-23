@@ -1,10 +1,9 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using Domain.Interfaces;
 using MassTransit;
 using Microsoft.Extensions.Logging;
 using SharedModels.Messages;
 
-namespace Domain.Services
+namespace Infrastructure.Publisher
 {
     /// <summary>
     /// Service which publishes messages to the message broker (RabbitMq)

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Domain.Services;
+using Domain.Interfaces;
 using MassTransit;
 using Microsoft.Extensions.Logging;
 using SharedModels.Messages;

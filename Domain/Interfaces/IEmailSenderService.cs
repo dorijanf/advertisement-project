@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using SharedModels.Utils;
 
-namespace Domain.Services
+namespace Domain.Interfaces
 {
     /// <summary>
     /// Mock email service which stores email in the EmailQueue database

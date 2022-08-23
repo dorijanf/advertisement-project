@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Database;
 using Database.Entities;
+using Domain.Interfaces;
 using FluentValidation;
 using Nest;
 using SharedModels.Dtos;
-using SharedModels.Exceptions;
 using SharedModels.Messages;
 
 namespace Domain.Services
@@ -19,17 +18,20 @@ namespace Domain.Services
 
         private readonly IPublisherService publisherService;
         private readonly IElasticClient elasticClient;
-        private readonly AdvertisementContext dbContext;
+        private readonly Interfaces.IRepository<Advertisement> advertisementRepository;
+        private readonly Interfaces.IRepository<FavoriteAdvertisement> favoriteRepository;
         private readonly IValidator<AdvertisementDto> advertisementValidator;
 
         public AdvertisementService(IPublisherService publisherService,
             IElasticClient elasticClient,
-            AdvertisementContext dbContext,
+            Interfaces.IRepository<Advertisement> advertisementRepository,
+            Interfaces.IRepository<FavoriteAdvertisement> favoriteRepository,
             IValidator<AdvertisementDto> advertisementValidator)
         {
             this.publisherService = publisherService;
             this.elasticClient = elasticClient;
-            this.dbContext = dbContext;
+            this.advertisementRepository = advertisementRepository;
+            this.favoriteRepository = favoriteRepository;
             this.advertisementValidator = advertisementValidator;
         }
 
@@ -56,7 +58,7 @@ namespace Domain.Services
         /// <returns></returns>
         public async Task<AdvertisementDto> GetAdvertisementById(int id)
         {
-            var advertisement = await dbContext.Advertisements.FindAsync(id);
+            var advertisement = await advertisementRepository.GetById(id);
 
             return advertisement is null ? null : CreateAdvertisementDto(advertisement);
         }
@@ -73,12 +75,15 @@ namespace Domain.Services
         {
             await advertisementValidator.ValidateAndThrowAsync(model);
             var advertisement = CreateAdvertisementEntity(model);
-            dbContext.Add(advertisement);
-            await dbContext.SaveChangesAsync();
+            var insertedRecords = await advertisementRepository.Insert(advertisement);
 
-            await publisherService.Publish(new AdvertisementCreateMessage(CreateAdvertisementDto(advertisement)));
+            if (insertedRecords > 0)
+            {
+                await publisherService.Publish(new AdvertisementCreateMessage(CreateAdvertisementDto(advertisement)));
+                return advertisement.Id;
+            }
 
-            return advertisement.Id;
+            return -1;
         }
 
         /// <summary>
@@ -100,13 +105,16 @@ namespace Domain.Services
                 UserEmail = advertisement.UserEmail
             };
 
-            dbContext.FavoriteAdvertisements.Add(favoriteAdvertisement);
+            var insertedRecords = await favoriteRepository.Insert(favoriteAdvertisement);
 
-            await dbContext.SaveChangesAsync();
+            if (insertedRecords > 0)
+            {
+                await publisherService.Publish(new FavoriteCreateMessage(id, userEmail, advertisement.Title));
 
-            await publisherService.Publish(new FavoriteCreateMessage(id, userEmail, advertisement.Title));
+                return favoriteAdvertisement.Id;
+            }
 
-            return favoriteAdvertisement.Id;
+            return -1;
         }
 
         /// <summary>

@@ -2,10 +2,14 @@
 using System.IO;
 using System.Reflection;
 using Database;
+using Domain.Interfaces;
 using Domain.Services;
 using Domain.Subscribers;
 using Domain.Validators;
 using FluentValidation;
+using Infrastructure.Email;
+using Infrastructure.Publisher;
+using Infrastructure.Repository;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -132,6 +136,8 @@ namespace backend_template.ServiceExtensions
             services.AddScoped<IEmailSenderService, EmailSenderService>();
 
             services.AddTransient<IValidator<AdvertisementDto>, AdvertisementValidator>();
+
+            services.AddScoped(typeof(Domain.Interfaces.IRepository<>), typeof(Repository<>));
         }
 
         /// <summary>

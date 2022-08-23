@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Domain.Services;
+using Domain.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using SharedModels.Dtos;
 

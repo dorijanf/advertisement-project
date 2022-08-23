@@ -53,8 +53,6 @@ namespace backend_template.Middleware
         {
             var statusCode = exception switch
             {
-                NotFoundException => HttpStatusCode.NotFound,
-                BadRequestException => HttpStatusCode.BadRequest,
                 ValidationException => HttpStatusCode.BadRequest,
                 _ => HttpStatusCode.InternalServerError,
             };

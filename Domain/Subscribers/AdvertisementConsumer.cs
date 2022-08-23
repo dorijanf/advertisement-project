@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Database;
+using Database.Entities;
 using MassTransit;
 using Nest;
 using SharedModels.Exceptions;
@@ -14,14 +14,14 @@ namespace Domain.Subscribers
     public class AdvertisementConsumer : IConsumer<AdvertisementCreateMessage>
     {
         private readonly IElasticClient elasticClient;
-        private readonly AdvertisementContext dbContext;
+        private readonly Interfaces.IRepository<Advertisement> advertisementRepository;
 
         public AdvertisementConsumer(
             IElasticClient elasticClient,
-            AdvertisementContext dbContext)
+            Interfaces.IRepository<Advertisement> advertisementRepository)
         {
             this.elasticClient = elasticClient;
-            this.dbContext = dbContext;
+            this.advertisementRepository = advertisementRepository;
         }
 
         /// <summary>
@@ -63,14 +63,14 @@ namespace Domain.Subscribers
         /// <returns></returns>
         private async Task MarkAsFailedToSynchronize(int id)
         {
-            var advertisement = await dbContext.Advertisements.FindAsync(id);
+            var advertisement = await advertisementRepository.GetById(id);
 
             if (advertisement is not null)
             {
                 advertisement.FailedToSync = advertisement.FailedToSync is not true;
             }
 
-            await dbContext.SaveChangesAsync();
+            await advertisementRepository.Update(advertisement);
         }
     }
 }

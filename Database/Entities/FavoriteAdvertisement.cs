@@ -1,6 +1,6 @@
 ﻿namespace Database.Entities
 {
-    public class FavoriteAdvertisement
+    public class FavoriteAdvertisement : BaseEntity
     {
         public int Id { get; set; }
         public int AdvertisementId { get; set; }

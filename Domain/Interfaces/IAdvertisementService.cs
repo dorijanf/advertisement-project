@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using SharedModels.Dtos;
 
-namespace Domain.Services
+namespace Domain.Interfaces
 {
     /// <summary>
     /// The main domain service for advertisements. Tasked with storing and fetching
