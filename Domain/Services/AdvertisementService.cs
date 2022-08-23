@@ -58,12 +58,7 @@ namespace Domain.Services
         {
             var advertisement = await dbContext.Advertisements.FindAsync(id);
 
-            if (advertisement is null)
-            {
-                throw new NotFoundException();
-            }
-
-            return CreateAdvertisementDto(advertisement);
+            return advertisement is null ? null : CreateAdvertisementDto(advertisement);
         }
 
 
