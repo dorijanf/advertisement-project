@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SharedModels.Dtos
+﻿namespace SharedModels.Dtos
 {
+    /// <summary>
+    /// The DTO used when performing the action of adding an advertisement
+    /// to the users favorite list.
+    /// </summary>
     public class FavoriteDto
     {
         public string UserEmail { get; set; }
